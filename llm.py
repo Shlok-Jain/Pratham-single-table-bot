@@ -431,18 +431,17 @@ Answer:
 
 
 # Option 1: Pass API key directly to the function
-def get_llm_answer(prompt, model="gemini-2.0-flash"):
+def get_llm_answer(prompt, model="gemini-pro"):
     """
     Gets answer from LLM (Gemini) for the given prompt.
     """
     logger.info(f"Step 6: Getting answer from LLM (model: {model})...")
     try:
-        client = genai.Client()
+        genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+        
+        client = genai.GenerativeModel(model)
         logger.debug(f"Sending prompt to LLM (length: {len(prompt)} characters)")
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt
-        )
+        response = client.generate_content(prompt)
         logger.info("Received response from LLM")
         return response.text
     except Exception as e:

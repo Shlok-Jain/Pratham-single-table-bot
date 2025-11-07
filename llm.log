@@ -396,3 +396,34 @@
 2025-11-08 01:29:27,781 - __main__ - INFO - Using cached embeddings and index
 2025-11-08 01:29:27,785 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
 2025-11-08 01:29:27,785 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 01:32:47,286 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 01:32:47,287 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 01:32:47,289 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 01:32:47,291 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 01:32:47,292 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 01:32:47,293 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 01:32:47,294 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 01:32:47,294 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 01:32:47,307 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 01:32:47,307 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 01:32:47,319 - llm - INFO - All files unchanged, can use cache
+2025-11-08 01:32:47,320 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 01:32:47,320 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 01:32:47,320 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 01:32:47,322 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 01:32:47,331 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 01:32:47,332 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 01:32:47,334 - llm - INFO - All cache files loaded successfully
+2025-11-08 01:32:47,336 - llm - INFO - Using cached embeddings and index
+2025-11-08 01:32:47,354 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 01:32:47,360 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 01:33:15,614 - llm - INFO - Step 4: Retrieving top 3 results for: 'hey cutu'
+2025-11-08 01:33:15,866 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 01:33:15,866 - llm - INFO -   [1] From MP.json | Row 10 | Distance: 1.7589
+2025-11-08 01:33:15,867 - llm - INFO -   [2] From bihar.json | Row 10 | Distance: 1.7662
+2025-11-08 01:33:15,867 - llm - INFO -   [3] From bihar.json | Row 13 | Distance: 1.7820
+2025-11-08 01:33:15,867 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 01:33:15,867 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.0-flash)...
+2025-11-08 01:33:16,979 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-11-08 01:33:18,481 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-11-08 01:33:18,497 - llm - INFO - Received response from LLM
