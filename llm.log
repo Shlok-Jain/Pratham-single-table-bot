@@ -604,3 +604,32 @@
 2025-11-08 02:42:01,351 - llm - INFO - Step 5: Generating final LLM prompt...
 2025-11-08 02:42:01,351 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
 2025-11-08 02:42:15,668 - llm - INFO - Received response from LLM
+2025-11-08 03:21:10,082 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 03:21:10,091 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 03:21:10,096 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 03:21:10,098 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 03:21:10,140 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 03:21:10,146 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 03:21:10,150 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 03:21:10,150 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 03:21:10,197 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 03:21:10,198 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 03:21:10,219 - llm - INFO - All files unchanged, can use cache
+2025-11-08 03:21:10,219 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 03:21:10,219 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 03:21:10,228 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 03:21:10,230 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 03:21:10,235 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 03:21:10,236 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 03:21:10,237 - llm - INFO - All cache files loaded successfully
+2025-11-08 03:21:10,237 - llm - INFO - Using cached embeddings and index
+2025-11-08 03:21:10,245 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 03:21:10,245 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 03:21:31,994 - llm - INFO - Step 4: Retrieving top 3 results for: 'punjab'
+2025-11-08 03:21:32,511 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 03:21:32,513 - llm - INFO -   [1] From punjab.json | Row 19 | Distance: 0.9588
+2025-11-08 03:21:32,515 - llm - INFO -   [2] From punjab.json | Row 14 | Distance: 0.9989
+2025-11-08 03:21:32,515 - llm - INFO -   [3] From punjab.json | Row 23 | Distance: 1.0267
+2025-11-08 03:21:32,517 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 03:21:32,519 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
+2025-11-08 03:21:38,703 - llm - INFO - Received response from LLM
