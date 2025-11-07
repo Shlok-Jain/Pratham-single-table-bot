@@ -1,7 +1,4 @@
-
-
 from google import genai
-
 import os
 import json
 import faiss
@@ -11,6 +8,9 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 import logging
 import pickle
+from dotenv import load_dotenv
+
+load_dotenv()
 import hashlib
 from datetime import datetime
 
@@ -430,13 +430,13 @@ Answer:
 
 
 # Option 1: Pass API key directly to the function
-def get_llm_answer(prompt, api_key=None, model="gemini-2.0-flash"):
+def get_llm_answer(prompt, model="gemini-2.0-flash"):
     """
     Gets answer from LLM (Gemini) for the given prompt.
     """
     logger.info(f"Step 6: Getting answer from LLM (model: {model})...")
     try:
-        client = genai.Client(api_key=api_key)
+        client = genai.Client()
         logger.debug(f"Sending prompt to LLM (length: {len(prompt)} characters)")
         response = client.models.generate_content(
             model=model,
@@ -454,47 +454,14 @@ if __name__ == "__main__":
     logger.info("Starting LLM RAG Pipeline")
     logger.info("=" * 60)
     
-    # Define your API key
-    GEMINI_API_KEY = "AIzaSyA7oR7AJEDwQYDMMQGjHc1oLve_BUkC-h4"
-    
-    FILES_TO_PROCESS = [
-        "punjab.json",
-        "all_india.json",
-        "andhra_pradesh.json",
-        "bihar.json",
-        "UP.json",
-        "MP.json"
-    ]
-
-    USER_QUERY = "what percentage of children are enrolled in government primary schools in india in 2024"
-
-    logger.info(f"Processing {len(FILES_TO_PROCESS)} files")
-    tables = load_tables_from_files(FILES_TO_PROCESS)
-    logger.info(f"Loaded {len(tables)} tables")
-    
-    if tables:
-        chunks = create_chunks(tables)
-        logger.info(f"Created {len(chunks)} chunks")
+    logger.info("Calling LLM for answer...")
+    answer = get_llm_answer(final_prompt)
         
-        # Use cache-aware embedding function
-        index, model, embeddings, chunks = embed_and_index(
-            chunks, 
-            model_name='all-MiniLM-L6-v2',
-            file_paths=FILES_TO_PROCESS,
-            use_cache=True
-        )
-        
-        retrieved = retrieve_results(USER_QUERY, index, model, chunks)
-        final_prompt = generate_llm_prompt(retrieved, USER_QUERY)
-        
-        logger.info("Calling LLM for answer...")
-        answer = get_llm_answer(final_prompt, api_key=GEMINI_API_KEY)
-        
-        logger.info("\n" + "=" * 60)
-        logger.info("FINAL RESULTS")
-        logger.info("=" * 60)
-        print("\n--- FINAL LLM PROMPT ---")
-        print(final_prompt)
-        print("\n--- GEMINI RESPONSE ---")
-        print(answer)
-        logger.info("Pipeline completed successfully")
+    logger.info("\n" + "=" * 60)
+    logger.info("FINAL RESULTS")
+    logger.info("=" * 60)
+    print("\n--- FINAL LLM PROMPT ---")
+    print(final_prompt)
+    print("\n--- GEMINI RESPONSE ---")
+    print(answer)
+    logger.info("Pipeline completed successfully")
