@@ -10,9 +10,11 @@ import logging
 import pickle
 from dotenv import load_dotenv
 
+
 load_dotenv()
 import hashlib
 from datetime import datetime
+
 
 # Configure logging
 logging.basicConfig(
@@ -26,9 +28,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 # Cache directory for embeddings and index
 CACHE_DIR = Path("cache")
 CACHE_DIR.mkdir(exist_ok=True)
+
 
 # Cache file paths
 CACHE_INDEX_FILE = CACHE_DIR / "faiss_index.bin"
@@ -37,9 +41,11 @@ CACHE_CHUNKS_FILE = CACHE_DIR / "chunks.pkl"
 CACHE_METADATA_FILE = CACHE_DIR / "cache_metadata.json"
 CACHE_MODEL_FILE = CACHE_DIR / "model_name.txt"
 
+
 # ---------------------------------------------------------------------
 # Cache Management Functions
 # ---------------------------------------------------------------------
+
 
 def compute_file_hash(file_path):
     """Compute SHA256 hash of a file for change detection."""
@@ -52,6 +58,7 @@ def compute_file_hash(file_path):
     except Exception as e:
         logger.error(f"Error computing hash for {file_path}: {e}")
         return None
+
 
 def get_file_metadata(file_paths):
     """Get metadata (hash and mtime) for all files."""
@@ -66,6 +73,7 @@ def get_file_metadata(file_paths):
             }
     return metadata
 
+
 def load_cache_metadata():
     """Load cache metadata if it exists."""
     if CACHE_METADATA_FILE.exists():
@@ -75,6 +83,7 @@ def load_cache_metadata():
         except Exception as e:
             logger.warning(f"Error loading cache metadata: {e}")
     return None
+
 
 def save_cache_metadata(file_paths):
     """Save metadata for files that were used to create the cache."""
@@ -89,6 +98,7 @@ def save_cache_metadata(file_paths):
         logger.info("Cache metadata saved successfully")
     except Exception as e:
         logger.error(f"Error saving cache metadata: {e}")
+
 
 def files_have_changed(file_paths, cached_metadata):
     """Check if any source files have changed since cache was created."""
@@ -120,6 +130,7 @@ def files_have_changed(file_paths, cached_metadata):
     
     logger.info("All files unchanged, can use cache")
     return False
+
 
 def save_embeddings_and_index(index, embeddings, chunks, model_name, file_paths):
     """Save embeddings, FAISS index, chunks, and metadata to disk."""
@@ -162,6 +173,7 @@ def save_embeddings_and_index(index, embeddings, chunks, model_name, file_paths)
         logger.error(f"Error saving cache: {e}")
         raise
 
+
 def load_embeddings_and_index():
     """Load embeddings, FAISS index, and chunks from disk."""
     try:
@@ -202,20 +214,25 @@ def load_embeddings_and_index():
         logger.error(f"Error loading cache: {e}")
         return None, None, None, None
 
+
 # ---------------------------------------------------------------------
 # Utility: Load all JSON files and normalize into tables
 # ---------------------------------------------------------------------
+
 
 def load_tables_from_files(file_paths):
     """
     Loads structured or list-style JSON files and converts them into DataFrames.
 
+
     Each file may contain:
       - Dict with keys 'title', 'description', 'table'
       - Or just a list of row dictionaries (no metadata)
 
+
     Args:
         file_paths (list[str]): Paths to JSON files.
+
 
     Returns:
         list[dict]: Each dict contains title, description, dataframe, and metadata.
@@ -223,11 +240,13 @@ def load_tables_from_files(file_paths):
     logger.info(f"Step 1: Loading tables from {len(file_paths)} files...")
     all_tables = []
 
+
     for path in file_paths:
         path = Path(path)
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
+
 
             # Handle both dict-style and list-style JSONs
             if isinstance(data, list):
@@ -241,9 +260,11 @@ def load_tables_from_files(file_paths):
             else:
                 raise ValueError("Unsupported JSON structure")
 
+
             if df.empty:
                 logger.warning(f"'{path.name}' contained an empty table, skipped.")
                 continue
+
 
             all_tables.append({
                 "title": title,
@@ -253,17 +274,21 @@ def load_tables_from_files(file_paths):
             })
             logger.info(f"Loaded '{path.name}' ({len(df)} rows)")
 
+
         except Exception as e:
             logger.error(f"Error loading '{path.name}': {e}")
+
 
     if not all_tables:
         logger.warning("No valid tables loaded. Check file paths or formats.")
     return all_tables
 
 
+
 # ---------------------------------------------------------------------
 # Step 2: Create Chunks
 # ---------------------------------------------------------------------
+
 
 def create_chunks(tables):
     """
@@ -272,10 +297,12 @@ def create_chunks(tables):
     logger.info("Step 2: Creating row-based chunks with metadata...")
     chunks = []
 
+
     for table in tables:
         df = table["dataframe"]
         for row_idx, row in df.iterrows():
             serialized_text = "; ".join(f"{col}: {val}" for col, val in row.items())
+
 
             metadata = {
                 "source_file": table["source_file"],
@@ -286,15 +313,19 @@ def create_chunks(tables):
                 "row_data": row.to_dict(),
             }
 
+
             chunks.append({"serialized_text": serialized_text, "metadata": metadata})
+
 
     logger.info(f"Created {len(chunks)} total chunks from {len(tables)} files.")
     return chunks
 
 
+
 # ---------------------------------------------------------------------
 # Step 3: Embedding & Indexing
 # ---------------------------------------------------------------------
+
 
 def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_cache=True):
     """
@@ -312,8 +343,10 @@ def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_
     """
     logger.info("Step 3: Embedding chunks and building FAISS index...")
 
+
     if not chunks:
         raise ValueError("No chunks provided to embed_and_index().")
+
 
     # Try to load from cache if enabled
     if use_cache and file_paths:
@@ -340,6 +373,7 @@ def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_
         else:
             logger.info("Files have changed or cache not found, will regenerate embeddings")
 
+
     # Generate new embeddings
     logger.info(f"Generating embeddings using model: {model_name}")
     model = SentenceTransformer(model_name)
@@ -347,8 +381,10 @@ def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_
     logger.info(f"Encoding {len(texts)} chunks...")
     embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
 
+
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(embeddings)
+
 
     logger.info(f"FAISS index built with {index.ntotal} vectors (dimension: {embeddings.shape[1]})")
     
@@ -362,9 +398,11 @@ def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_
     return index, model, embeddings, chunks
 
 
+
 # ---------------------------------------------------------------------
 # Step 4: Retrieval
 # ---------------------------------------------------------------------
+
 
 def retrieve_results(query, index, model, chunks, top_k=3):
     """
@@ -372,12 +410,15 @@ def retrieve_results(query, index, model, chunks, top_k=3):
     """
     logger.info(f"Step 4: Retrieving top {top_k} results for: '{query}'")
 
+
     if index.ntotal == 0:
         raise ValueError("FAISS index is empty. Run embed_and_index() first.")
+
 
     logger.debug(f"Encoding query: {query}")
     query_emb = model.encode([query], convert_to_numpy=True)
     distances, indices = index.search(query_emb, top_k)
+
 
     retrieved = [chunks[i] for i in indices[0]]
     logger.info(f"Retrieved {len(retrieved)} chunks:")
@@ -385,12 +426,15 @@ def retrieve_results(query, index, model, chunks, top_k=3):
         distance = distances[0][idx] if len(distances) > 0 and len(distances[0]) > idx else "N/A"
         logger.info(f"  [{idx+1}] From {chunk['metadata']['source_file']} | Row {chunk['metadata']['row_index']} | Distance: {distance:.4f}")
 
+
     return retrieved
+
 
 
 # ---------------------------------------------------------------------
 # Step 5: Prompt Assembly
 # ---------------------------------------------------------------------
+
 
 def generate_llm_prompt(retrieved_chunks, query):
     """
@@ -398,9 +442,11 @@ def generate_llm_prompt(retrieved_chunks, query):
     """
     logger.info("Step 5: Generating final LLM prompt...")
 
+
     if not retrieved_chunks:
         logger.warning("No chunks retrieved for prompt generation")
         return f"User Question: {query}\n\nNo relevant context found."
+
 
     grouped_context = ""
     for chunk in retrieved_chunks:
@@ -410,13 +456,16 @@ def generate_llm_prompt(retrieved_chunks, query):
             + "; ".join(f"{k}: {v}" for k, v in m["row_data"].items()) + "\n"
         )
 
+
     prompt = f"""
 You are a factual AI assistant. Use the context below to answer the user's question.
+
 
 --- CONTEXT ---
 {grouped_context}
 --- QUESTION ---
 {query}
+
 
 Answer:
 """
@@ -424,16 +473,16 @@ Answer:
     return prompt.strip()
 
 
+
 # ---------------------------------------------------------------------
-# Main pipeline runner
+# Step 6: LLM Answer (UPDATED MODEL)
 # ---------------------------------------------------------------------
 
 
-
-# Option 1: Pass API key directly to the function
-def get_llm_answer(prompt, model="gemini-pro"):
+def get_llm_answer(prompt, model="gemini-2.5-flash"):
     """
     Gets answer from LLM (Gemini) for the given prompt.
+    Updated to use gemini-2.5-flash instead of deprecated gemini-pro.
     """
     logger.info(f"Step 6: Getting answer from LLM (model: {model})...")
     try:
@@ -448,23 +497,28 @@ def get_llm_answer(prompt, model="gemini-pro"):
         logger.error(f"Error getting LLM answer: {e}")
         raise
 
+
 # In main execution:
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info("Starting LLM RAG Pipeline")
     logger.info("=" * 60)
 
+
     # Define the user query and file paths
     user_query = "What are the major schemes in Andhra Pradesh?"
     file_paths = ["andhra_pradesh.json", "bihar.json", "MP.json", "punjab.json", "UP.json", "all_india.json"]
+
 
     # --- Full RAG Pipeline ---
     # 1. Load tables
     tables = load_tables_from_files(file_paths)
 
+
     if tables:
         # 2. Create chunks
         chunks = create_chunks(tables)
+
 
         # 3. Embed and index chunks
         index, model, embeddings, chunks = embed_and_index(
@@ -474,11 +528,14 @@ if __name__ == "__main__":
             use_cache=True
         )
 
+
         # 4. Retrieve relevant chunks
         retrieved_chunks = retrieve_results(user_query, index, model, chunks, top_k=5)
 
+
         # 5. Generate the final prompt
         final_prompt = generate_llm_prompt(retrieved_chunks, user_query)
+
 
         # 6. Get the answer from the LLM
         logger.info("Calling LLM for answer...")

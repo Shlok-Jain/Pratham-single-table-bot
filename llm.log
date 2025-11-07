@@ -456,3 +456,114 @@
 2025-11-08 01:56:24,341 - llm - INFO - Step 5: Generating final LLM prompt...
 2025-11-08 01:56:24,342 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
 2025-11-08 01:56:24,342 - llm - ERROR - Error getting LLM answer: module 'google.genai' has no attribute 'configure'
+2025-11-08 02:09:36,731 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 02:09:36,737 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 02:09:36,740 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 02:09:36,743 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 02:09:36,746 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 02:09:36,748 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 02:09:36,750 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 02:09:36,751 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 02:09:36,811 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 02:09:36,811 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 02:09:36,827 - llm - INFO - All files unchanged, can use cache
+2025-11-08 02:09:36,828 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:09:36,828 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:09:36,831 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 02:09:36,833 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 02:09:36,837 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 02:09:36,840 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 02:09:36,840 - llm - INFO - All cache files loaded successfully
+2025-11-08 02:09:36,842 - llm - INFO - Using cached embeddings and index
+2025-11-08 02:09:36,851 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 02:09:36,852 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 02:10:00,542 - llm - INFO - Step 4: Retrieving top 3 results for: 'what up with punjab'
+2025-11-08 02:10:01,307 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:10:01,310 - llm - INFO -   [1] From punjab.json | Row 19 | Distance: 0.9142
+2025-11-08 02:10:01,315 - llm - INFO -   [2] From punjab.json | Row 14 | Distance: 0.9454
+2025-11-08 02:10:01,317 - llm - INFO -   [3] From punjab.json | Row 23 | Distance: 1.0399
+2025-11-08 02:10:01,320 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:10:01,325 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
+2025-11-08 02:10:02,518 - llm - ERROR - Error getting LLM answer: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-08 02:10:53,750 - llm - INFO - Step 4: Retrieving top 3 results for: 'hey'
+2025-11-08 02:10:53,809 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:10:53,809 - llm - INFO -   [1] From punjab.json | Row 13 | Distance: 1.8518
+2025-11-08 02:10:53,810 - llm - INFO -   [2] From bihar.json | Row 13 | Distance: 1.8641
+2025-11-08 02:10:53,810 - llm - INFO -   [3] From punjab.json | Row 10 | Distance: 1.8648
+2025-11-08 02:10:53,810 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:10:53,811 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
+2025-11-08 02:10:54,428 - llm - ERROR - Error getting LLM answer: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-08 02:10:57,662 - llm - INFO - Step 4: Retrieving top 3 results for: 'yo?'
+2025-11-08 02:10:57,700 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:10:57,700 - llm - INFO -   [1] From punjab.json | Row 13 | Distance: 1.7617
+2025-11-08 02:10:57,701 - llm - INFO -   [2] From bihar.json | Row 13 | Distance: 1.7780
+2025-11-08 02:10:57,701 - llm - INFO -   [3] From UP.json | Row 13 | Distance: 1.7890
+2025-11-08 02:10:57,703 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:10:57,704 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
+2025-11-08 02:10:58,336 - llm - ERROR - Error getting LLM answer: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-08 02:12:04,877 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 02:12:04,885 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 02:12:04,887 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 02:12:04,889 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 02:12:04,890 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 02:12:04,892 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 02:12:04,894 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 02:12:04,894 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 02:12:04,909 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 02:12:04,909 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 02:12:04,918 - llm - INFO - All files unchanged, can use cache
+2025-11-08 02:12:04,919 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:12:04,919 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:12:04,920 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 02:12:04,921 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 02:12:04,923 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 02:12:04,924 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 02:12:04,924 - llm - INFO - All cache files loaded successfully
+2025-11-08 02:12:04,925 - llm - INFO - Using cached embeddings and index
+2025-11-08 02:12:04,927 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 02:12:04,927 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 02:13:15,211 - llm - INFO - Step 4: Retrieving top 3 results for: 'hey'
+2025-11-08 02:13:15,259 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:13:15,259 - llm - INFO -   [1] From punjab.json | Row 13 | Distance: 1.8518
+2025-11-08 02:13:15,259 - llm - INFO -   [2] From bihar.json | Row 13 | Distance: 1.8641
+2025-11-08 02:13:15,260 - llm - INFO -   [3] From punjab.json | Row 10 | Distance: 1.8648
+2025-11-08 02:13:15,260 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:13:15,260 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
+2025-11-08 02:13:15,822 - llm - ERROR - Error getting LLM answer: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-08 02:15:09,204 - llm - INFO - Step 4: Retrieving top 3 results for: 'hey'
+2025-11-08 02:15:09,260 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:15:09,262 - llm - INFO -   [1] From punjab.json | Row 13 | Distance: 1.8518
+2025-11-08 02:15:09,262 - llm - INFO -   [2] From bihar.json | Row 13 | Distance: 1.8641
+2025-11-08 02:15:09,262 - llm - INFO -   [3] From punjab.json | Row 10 | Distance: 1.8648
+2025-11-08 02:15:09,263 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:15:09,263 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-pro)...
+2025-11-08 02:15:09,617 - llm - ERROR - Error getting LLM answer: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-08 02:23:20,295 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 02:23:20,302 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 02:23:20,304 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 02:23:20,306 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 02:23:20,308 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 02:23:20,309 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 02:23:20,310 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 02:23:20,310 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 02:23:20,325 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 02:23:20,326 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 02:23:20,337 - llm - INFO - All files unchanged, can use cache
+2025-11-08 02:23:20,337 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:23:20,338 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:23:20,339 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 02:23:20,340 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 02:23:20,342 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 02:23:20,343 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 02:23:20,343 - llm - INFO - All cache files loaded successfully
+2025-11-08 02:23:20,343 - llm - INFO - Using cached embeddings and index
+2025-11-08 02:23:20,345 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 02:23:20,346 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 02:24:04,652 - llm - INFO - Step 4: Retrieving top 3 results for: 'whats up with punjab'
+2025-11-08 02:24:04,747 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:24:04,748 - llm - INFO -   [1] From punjab.json | Row 19 | Distance: 0.9698
+2025-11-08 02:24:04,748 - llm - INFO -   [2] From punjab.json | Row 14 | Distance: 0.9878
+2025-11-08 02:24:04,748 - llm - INFO -   [3] From punjab.json | Row 15 | Distance: 1.0962
+2025-11-08 02:24:04,749 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:24:04,749 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
+2025-11-08 02:24:12,279 - llm - INFO - Received response from LLM
