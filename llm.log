@@ -567,3 +567,40 @@
 2025-11-08 02:24:04,749 - llm - INFO - Step 5: Generating final LLM prompt...
 2025-11-08 02:24:04,749 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
 2025-11-08 02:24:12,279 - llm - INFO - Received response from LLM
+2025-11-08 02:35:57,858 - llm - INFO - Step 4: Retrieving top 3 results for: 'whats up with punjab'
+2025-11-08 02:35:58,002 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:35:58,002 - llm - INFO -   [1] From punjab.json | Row 19 | Distance: 0.9698
+2025-11-08 02:35:58,002 - llm - INFO -   [2] From punjab.json | Row 14 | Distance: 0.9878
+2025-11-08 02:35:58,002 - llm - INFO -   [3] From punjab.json | Row 15 | Distance: 1.0962
+2025-11-08 02:35:58,002 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:35:58,002 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
+2025-11-08 02:36:10,730 - llm - INFO - Received response from LLM
+2025-11-08 02:41:41,169 - llm - INFO - Step 1: Loading tables from 6 files...
+2025-11-08 02:41:41,173 - llm - INFO - Loaded 'punjab.json' (24 rows)
+2025-11-08 02:41:41,175 - llm - INFO - Loaded 'all_india.json' (30 rows)
+2025-11-08 02:41:41,176 - llm - INFO - Loaded 'andhra_pradesh.json' (24 rows)
+2025-11-08 02:41:41,177 - llm - INFO - Loaded 'bihar.json' (24 rows)
+2025-11-08 02:41:41,178 - llm - INFO - Loaded 'UP.json' (24 rows)
+2025-11-08 02:41:41,180 - llm - INFO - Loaded 'MP.json' (24 rows)
+2025-11-08 02:41:41,181 - llm - INFO - Step 2: Creating row-based chunks with metadata...
+2025-11-08 02:41:41,205 - llm - INFO - Created 150 total chunks from 6 files.
+2025-11-08 02:41:41,206 - llm - INFO - Step 3: Embedding chunks and building FAISS index...
+2025-11-08 02:41:41,214 - llm - INFO - All files unchanged, can use cache
+2025-11-08 02:41:41,214 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:41:41,214 - llm - INFO - Loading embeddings and index from cache...
+2025-11-08 02:41:41,216 - llm - INFO - FAISS index loaded: 150 vectors
+2025-11-08 02:41:41,217 - llm - INFO - Embeddings loaded: shape (150, 384)
+2025-11-08 02:41:41,221 - llm - INFO - Chunks loaded: 150 chunks
+2025-11-08 02:41:41,225 - llm - INFO - Model name: all-MiniLM-L6-v2
+2025-11-08 02:41:41,225 - llm - INFO - All cache files loaded successfully
+2025-11-08 02:41:41,225 - llm - INFO - Using cached embeddings and index
+2025-11-08 02:41:41,225 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-11-08 02:41:41,225 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-08 02:42:01,232 - llm - INFO - Step 4: Retrieving top 3 results for: 'what up with punjab'
+2025-11-08 02:42:01,350 - llm - INFO - Retrieved 3 chunks:
+2025-11-08 02:42:01,350 - llm - INFO -   [1] From punjab.json | Row 19 | Distance: 0.9142
+2025-11-08 02:42:01,351 - llm - INFO -   [2] From punjab.json | Row 14 | Distance: 0.9454
+2025-11-08 02:42:01,351 - llm - INFO -   [3] From punjab.json | Row 23 | Distance: 1.0399
+2025-11-08 02:42:01,351 - llm - INFO - Step 5: Generating final LLM prompt...
+2025-11-08 02:42:01,351 - llm - INFO - Step 6: Getting answer from LLM (model: gemini-2.5-flash)...
+2025-11-08 02:42:15,668 - llm - INFO - Received response from LLM
