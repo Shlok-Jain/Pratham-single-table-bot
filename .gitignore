@@ -2,3 +2,4 @@
 /tests
 /cache
 /.venv
+.env
