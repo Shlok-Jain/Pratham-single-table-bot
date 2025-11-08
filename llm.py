@@ -262,8 +262,11 @@ def create_chunks(tables):
 
     for table in tables:
         df = table["dataframe"]
+        print(df.head())
         for row_idx, row in df.iterrows():
             serialized_text = "; ".join(f"{col}: {val}" for col, val in row.items())
+            # According to state name or all india, all this information into seralized text so that it goes into embedding
+            
 
             metadata = {
                 "source_file": table["source_file"],
