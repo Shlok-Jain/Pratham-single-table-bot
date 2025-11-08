@@ -359,7 +359,7 @@ def retrieve_results(query, index, model, chunks, top_k=3):
     logger.debug(f"Encoding query: {query}")
     query_rewrite_prompt = '''
     You are a helpful assistant. Rephrase the following user query to be more specific and detailed for better search results:
-    Context: You are a data companion for ASER report, which is an annual publication that provides comprehensive data and analysis on the state of education in India.
+    Context: You are a data companion who provides comprehensive data and analysis on the state of education in India.
     ## RULES ##
     - If no specific state is mentioned, assume the user is interested in all-India data.
     - Include relevant keywords related to education, demographics, and schemes.
