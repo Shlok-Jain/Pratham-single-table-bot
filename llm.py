@@ -370,7 +370,7 @@ def retrieve_results(query, index, model, chunks, top_k=3):
     # query_rewritten = model.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     query_rewritten = client.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     logger.info(f"Rewritten query for embedding: '{query_rewritten}'")
-    query_emb = model.encode([query_rewritten], convert_to_numpy=True)
+    query_emb = model.encode([query], convert_to_numpy=True)
     distances, indices = index.search(query_emb, top_k)
 
     retrieved = [chunks[i] for i in indices[0]]
