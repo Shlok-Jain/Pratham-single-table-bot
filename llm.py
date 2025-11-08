@@ -328,10 +328,17 @@ def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_
             logger.info("Files have changed or cache not found, will regenerate embeddings")
 
     logger.info(f"Generating embeddings using model: {model_name}")
-    model = SentenceTransformer(model_name)
+    # model = SentenceTransformer(model_name)
+    client = genai.Client()
     texts = [chunk["serialized_text"] for chunk in chunks]
     logger.info(f"Encoding {len(texts)} chunks...")
-    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+    # embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+    result = client.models.embed_content(
+        model=model_name,
+        content=texts
+    )
+    embeddings = np.array(result.embeddings)
+    logger.info(f"Generated embeddings with shape: {embeddings.shape}")
 
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(embeddings)
@@ -374,7 +381,13 @@ def retrieve_results(query, index, model, chunks, top_k=3):
     # query_rewritten = model.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     query_rewritten = client.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     logger.info(f"Rewritten query for embedding: '{query_rewritten}'")
-    query_emb = model.encode([query], convert_to_numpy=True)
+    # query_emb = model.encode([query], convert_to_numpy=True)
+    client_embed = genai.Client()
+    result = client_embed.models.embed_content(
+        model='gemini-embedding-001',
+        content=[query]
+    )
+    query_emb = np.array(result.embeddings)
     distances, indices = index.search(query_emb, top_k)
 
     retrieved = [chunks[i] for i in indices[0]]
