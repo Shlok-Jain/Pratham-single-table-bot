@@ -11,6 +11,7 @@ import pickle
 from dotenv import load_dotenv
 import hashlib
 from datetime import datetime
+from google import genai
 
 load_dotenv()
 
