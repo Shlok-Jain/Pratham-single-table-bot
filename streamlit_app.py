@@ -88,7 +88,7 @@ def initialize_rag_system():
         chunks = create_chunks(tables)
         index, model, embeddings, chunks = embed_and_index(
             chunks,
-            model_name='gemini-embedding-001',
+            model_name='all-MiniLM-L6-v2',
             file_paths=FILES_TO_PROCESS,
             use_cache=True
         )
