@@ -262,6 +262,7 @@ def create_chunks(tables):
 
     for table in tables:
         df = table["dataframe"]
+        print(df.head())
         for row_idx, row in df.iterrows():
             serialized_text = "; ".join(f"{col}: {val}" for col, val in row.items())
 
