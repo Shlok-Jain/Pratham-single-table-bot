@@ -406,8 +406,7 @@ def generate_llm_prompt(retrieved_chunks, query):
     prompt = f"""
 You are an expert data analyst specializing in Indian educational data. Use the provided context from various state and all-India datasets to answer the user's question accurately.
 ## RULES ##
-- Use only the information provided in the context.
-- If the context does not contain the answer, respond with "Insufficient data to answer the question."
+- If the context does not contain the answer, respond that the information is not available, and provide answer for any similar aspects if possible.
 - Provide clear, concise, and informative answers.
 - Along with your answer, cite the source file and table title from which the information was derived in short.
 - Also include the full table in markdown format after your answer for reference.
