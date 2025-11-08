@@ -459,7 +459,7 @@ if __name__ == "__main__":
 
         index, model, embeddings, chunks = embed_and_index(
             chunks,
-            model_name='all-MiniLM-L6-v2',
+            model_name='gemini-embedding-001',
             file_paths=file_paths,
             use_cache=True
         )
