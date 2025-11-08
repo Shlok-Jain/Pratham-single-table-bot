@@ -357,6 +357,18 @@ def retrieve_results(query, index, model, chunks, top_k=3):
         raise ValueError("FAISS index is empty. Run embed_and_index() first.")
 
     logger.debug(f"Encoding query: {query}")
+    query_rewrite_prompt = '''
+    You are a helpful assistant. Rephrase the following user query to be more specific and detailed for better search results:
+    Context: You are a data companion for ASER report, which is an annual publication that provides comprehensive data and analysis on the state of education in India.
+    ## RULES ##
+    - If no specific state is mentioned, assume the user is interested in all-India data.
+    - Include relevant keywords related to education, demographics, and schemes.
+    - OUTPUT FORMAT: Provide only the rewritten query without any additional text.
+
+    User Query: "{query}"
+    '''
+    query_rewritten = model.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
+    logger.info(f"Rewritten query for embedding: '{query_rewritten}'")
     query_emb = model.encode([query], convert_to_numpy=True)
     distances, indices = index.search(query_emb, top_k)
 
@@ -391,7 +403,13 @@ def generate_llm_prompt(retrieved_chunks, query):
         )
 
     prompt = f"""
-You are a factual AI assistant. Use the context below to answer the user's question.
+You are an expert data analyst specializing in Indian educational data. Use the provided context from various state and all-India datasets to answer the user's question accurately.
+## RULES ##
+- Use only the information provided in the context.
+- If the context does not contain the answer, respond with "Insufficient data to answer the question."
+- Provide clear, concise, and informative answers.
+- Along with your answer, cite the source file and table title from which the information was derived in short.
+- Also include the full table in markdown format after your answer for reference.
 
 --- CONTEXT ---
 {grouped_context}
