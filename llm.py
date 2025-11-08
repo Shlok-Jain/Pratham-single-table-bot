@@ -358,10 +358,11 @@ def retrieve_results(query, index, model, chunks, top_k=3):
 
     logger.debug(f"Encoding query: {query}")
     query_rewrite_prompt = '''
-    You are a helpful assistant. Rephrase the following user query to be more specific and detailed for better search results:
+    You are a helpful assistant. Rephrase the following user query to be more detailed, don't make it too long and complex, just follow the instructions below.
     Context: You are a data companion who provides comprehensive data and analysis on the state of education in India.
     ## RULES ##
     - If no specific state is mentioned, assume the user is interested in all-India data.
+    - If no year is mentioned, assume 2024.
     - OUTPUT FORMAT: Provide only the rewritten query without any additional text.
 
     User Query: "{query}"
