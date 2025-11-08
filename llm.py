@@ -253,6 +253,11 @@ def load_tables_from_files(file_paths):
 # Step 2: Create Chunks
 # =====================================================================
 
+def get_state_name_from_filename(filename):
+    if filename.lower() == "all_india.json":
+        return "This is ALL INDIA data."
+    return f"This is {filename.replace(".json", "").replace("_", " ")} data."
+
 def create_chunks(tables):
     """
     Converts each row of each table into a serialized textual chunk with metadata.
@@ -264,7 +269,7 @@ def create_chunks(tables):
         df = table["dataframe"]
         print(df.head())
         for row_idx, row in df.iterrows():
-            serialized_text = "; ".join(f"{col}: {val}" for col, val in row.items())
+            serialized_text = "; ".join(f"{col}: {val} - {get_state_name_from_filename(table["source_file"])}" for col, val in row.items())
 
             metadata = {
                 "source_file": table["source_file"],
