@@ -5,13 +5,12 @@ import faiss
 import pandas as pd
 import numpy as np
 from pathlib import Path
-# from sentence_transformers import SentenceTransformer # <-- Removed
+from sentence_transformers import SentenceTransformer
 import logging
 import pickle
 from dotenv import load_dotenv
 import hashlib
 from datetime import datetime
-from google import genai
 
 load_dotenv()
 
@@ -263,11 +262,8 @@ def create_chunks(tables):
 
     for table in tables:
         df = table["dataframe"]
-        print(df.head())
         for row_idx, row in df.iterrows():
             serialized_text = "; ".join(f"{col}: {val}" for col, val in row.items())
-            # According to state name or all india, all this information into seralized text so that it goes into embedding
-            
 
             metadata = {
                 "source_file": table["source_file"],
@@ -287,19 +283,19 @@ def create_chunks(tables):
 # Step 3: Embedding & Indexing
 # =====================================================================
 
-def embed_and_index(chunks, model_name='models/embedding-001', file_paths=None, use_cache=True):
+def embed_and_index(chunks, model_name='all-MiniLM-L6-v2', file_paths=None, use_cache=True):
     """
     Embeds all text chunks and builds a FAISS index for semantic retrieval.
     Uses cache if available and files haven't changed.
     
     Args:
         chunks: List of chunks to embed
-        model_name: Name of the Gemini embedding model
+        model_name: Name of the sentence transformer model
         file_paths: List of source file paths (for cache validation)
         use_cache: Whether to use cache if available
     
     Returns:
-        tuple: (index, embeddings, chunks)
+        tuple: (index, model, embeddings, chunks)
     """
     logger.info("Step 3: Embedding chunks and building FAISS index...")
 
@@ -317,8 +313,8 @@ def embed_and_index(chunks, model_name='models/embedding-001', file_paths=None, 
                 if index is not None and embeddings is not None and cached_chunks is not None:
                     if cached_model_name == model_name:
                         logger.info("Using cached embeddings and index")
-                        # We don't need to return a model object anymore
-                        return index, embeddings, cached_chunks
+                        model = SentenceTransformer(model_name)
+                        return index, model, embeddings, cached_chunks
                     else:
                         logger.warning(f"Model mismatch: cached={cached_model_name}, requested={model_name}. Regenerating...")
                 else:
@@ -329,23 +325,13 @@ def embed_and_index(chunks, model_name='models/embedding-001', file_paths=None, 
             logger.info("Files have changed or cache not found, will regenerate embeddings")
 
     logger.info(f"Generating embeddings using model: {model_name}")
-    # model = SentenceTransformer(model_name) # <-- Removed
-    client = genai.Client() # Use the Gemini client
+    model = SentenceTransformer(model_name)
     texts = [chunk["serialized_text"] for chunk in chunks]
     logger.info(f"Encoding {len(texts)} chunks...")
-    
-    # Use genai.embed_content instead of model.encode
-    # Note: The 'gemini-embedding-001' model is officially named 'models/embedding-001' in the API
-    result = genai.embed_content(
-        model=model_name,
-        content=texts,
-        task_type="RETRIEVAL_DOCUMENT" # Specify task type for document embeddings
-    )
-    embeddings = np.array(result['embedding']) # Access the embedding from the result dict
-    logger.info(f"Generated embeddings with shape: {embeddings.shape}")
+    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
 
     index = faiss.IndexFlatL2(embeddings.shape[1])
-    index.add(embeddings.astype(np.float32)) # Ensure float32 for FAISS
+    index.add(embeddings)
 
     logger.info(f"FAISS index built with {index.ntotal} vectors (dimension: {embeddings.shape[1]})")
     
@@ -355,17 +341,15 @@ def embed_and_index(chunks, model_name='models/embedding-001', file_paths=None, 
         except Exception as e:
             logger.warning(f"Failed to save cache: {e}")
     
-    # Return index, embeddings, and chunks. The model object is no longer needed.
-    return index, embeddings, chunks
+    return index, model, embeddings, chunks
 
 # =====================================================================
 # Step 4: Retrieval
 # =====================================================================
 
-def retrieve_results(query, index, chunks, top_k=3):
+def retrieve_results(query, index, model, chunks, top_k=3):
     """
     Retrieves top-k relevant chunks for the given user query.
-    Removed 'model' parameter as it's no longer needed.
     """
     logger.info(f"Step 4: Retrieving top {top_k} results for: '{query}'")
 
@@ -383,19 +367,12 @@ def retrieve_results(query, index, chunks, top_k=3):
 
     User Query: "{query}"
     '''
-    client = genai.GenerativeModel("gemini-1.5-flash") # Using 1.5-flash
+    client = genai.GenerativeModel("gemini-2.5-flash")
+    # query_rewritten = model.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     query_rewritten = client.generate_content(query_rewrite_prompt.format(query=query)).text.strip()
     logger.info(f"Rewritten query for embedding: '{query_rewritten}'")
-    
-    # Use genai.embed_content for the query
-    # model.encode is removed
-    result = genai.embed_content(
-        model='models/embedding-001', # Use the standard Gemini embedding model
-        content=query_rewritten, # Embed the rewritten query
-        task_type="RETRIEVAL_QUERY" # Specify task type for query
-    )
-    query_emb = np.array(result['embedding']).reshape(1, -1) # Reshape for FAISS search
-    distances, indices = index.search(query_emb.astype(np.float32), top_k) # Ensure float32
+    query_emb = model.encode([query], convert_to_numpy=True)
+    distances, indices = index.search(query_emb, top_k)
 
     retrieved = [chunks[i] for i in indices[0]]
     logger.info(f"Retrieved {len(retrieved)} chunks:")
@@ -449,7 +426,7 @@ Answer:
 # Step 6: LLM Answer
 # =====================================================================
 
-def get_llm_answer(prompt, model="gemini-1.5-flash"): # Updated to 1.5-flash
+def get_llm_answer(prompt, model="gemini-2.5-flash"):
     """
     Gets answer from LLM (Gemini) for the given prompt.
     """
@@ -471,29 +448,23 @@ if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info("Starting LLM RAG Pipeline")
     logger.info("=" * 60)
-    
-    # Configure genai client globally
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
     user_query = "What are the major schemes in Andhra Pradesh?"
     file_paths = ["andhra_pradesh.json", "bihar.json", "MP.json", "punjab.json", "UP.json", "all_india.json"]
-    embedding_model_name = 'models/embedding-001' # Use the correct API model name
 
     tables = load_tables_from_files(file_paths)
 
     if tables:
         chunks = create_chunks(tables)
 
-        # Updated function call: 'model' object is no longer returned
-        index, embeddings, chunks = embed_and_index(
+        index, model, embeddings, chunks = embed_and_index(
             chunks,
-            model_name=embedding_model_name,
+            model_name='all-MiniLM-L6-v2',
             file_paths=file_paths,
             use_cache=True
         )
 
-        # Updated function call: 'model' object is no longer passed
-        retrieved_chunks = retrieve_results(user_query, index, chunks, top_k=5)
+        retrieved_chunks = retrieve_results(user_query, index, model, chunks, top_k=5)
 
         final_prompt = generate_llm_prompt(retrieved_chunks, user_query)
 
